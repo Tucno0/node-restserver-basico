@@ -1,0 +1,27 @@
+/**
+ * Router
+ * se encarga de manejar las rutas de la aplicación
+ * es un middleware de express
+ */
+const { Router } = require('express')
+const {
+  usuariosGet,
+  usuariosPut,
+  usuariosPost,
+  usuariosDelete,
+  usuariosPatch,
+} = require('../controllers/usuarios.controller')
+
+const router = Router()
+
+router.get('/', usuariosGet)
+
+router.put('/:id', usuariosPut)
+
+router.post('/', usuariosPost)
+
+router.delete('/', usuariosDelete)
+
+router.patch('/', usuariosPatch)
+
+module.exports = router
