@@ -7,6 +7,8 @@ const usuariosGet = async (req = request, res = response) => {
   // const query = req.query
   // const { q, nombre = 'No name', apikey, page = 1, limit } = req.query
   const { limite = 5, desde = 0 } = req.query
+
+  // estado: true es para que solo devuelva los usuarios que tengan el estado en true
   const query = { estado: true }
 
   /**
@@ -90,13 +92,17 @@ const usuariosPatch = (req = request, res = response) => {
 const usuariosDelete = async (req = request, res = response) => {
   const { id } = req.params
 
+  // const uid = req.uid
+
   // Borrar físicamente, no recomendado porque se pierden los datos relacionados con el usuario
   // const usuario = await Usuario.findByIdAndDelete(id)
 
   // Borrar cambiando el estado del usuario
   const usuario = await Usuario.findByIdAndUpdate(id, { estado: false }, { new: true })
 
-  res.json(usuario)
+  const usuarioAutenticado = req.usuario
+
+  res.json({ usuario, usuarioAutenticado })
 }
 
 module.exports = {
