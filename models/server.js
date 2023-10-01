@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const { dbConnection } = require('../database/config')
 
 class Server {
   constructor() {
@@ -7,8 +8,12 @@ class Server {
     this.port = process.env.PORT ?? 3000
     this.usuariosPath = '/api/usuarios'
 
+    // Conectar a base de datos
+    this.conectarDB()
+
     /**
      * Middlewares
+     * Funciones que se ejecutan antes de llamar a un controlador o seguir con la ejecución
      * Son funciones que añaden funcionalidades a nuestro web server
      * Cada vez que se levanta el servidor, se ejecutan todos los middlewares
      */
@@ -16,6 +21,15 @@ class Server {
 
     // Rutas de mi aplicación
     this.routes()
+  }
+
+  async conectarDB() {
+    /**
+     * Conexión a la base de datos con mongoose
+     * hay que poner el await porque es una función asíncrona
+     * Se conecta a la base de datos de MongoDB Atlas
+     */
+    await dbConnection()
   }
 
   middlewares() {
