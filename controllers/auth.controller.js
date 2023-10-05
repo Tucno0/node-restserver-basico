@@ -28,6 +28,8 @@ const login = async (req = request, res = response) => {
     }
     // !Verificar la contraseña
     // Comparar la contraseña que viene en el body con la que está en la BD (usuario.password)
+    // compareSync(<contraseña que viene en el body>, <contraseña que está en la BD>)
+    // Devuelve true si la contraseña es válida, false si no lo es
     const validPassword = bcryptjs.compareSync(password, usuario.password)
 
     if (!validPassword) {
@@ -92,6 +94,7 @@ const googleSignin = async (req = request, res = response) => {
       token
     })
   } catch (error) {
+    console.log(error)
     res.status(400).json({
       msg: 'Token de Google no es válido'
     })

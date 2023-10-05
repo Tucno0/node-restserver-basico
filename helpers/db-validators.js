@@ -3,6 +3,7 @@
  */
 const Usuario = require('../models/usuario')
 const Role = require('../models/role')
+const e = require('express')
 
 const esRolValido = async (rol = '') => {
   // Buscar el rol en la base de datos de MongoDB
@@ -21,11 +22,12 @@ const emailExiste = async (correo = '') => {
    * el primer parámetro es el filtro de búsqueda
    * el segundo parámetro es un string con los campos que queremos que devuelva
    * en este caso queremos que devuelva el correo
-   * si existe el correo, devolverá un objeto con el correo
+   * si existe el correo, devolverá un objeto usuario del correo
    * si no existe el correo, devolverá null
    * Esta funcion busca en la base de datos de MongoDB
    */
   const existeEmail = await Usuario.findOne({ correo })
+  console.log(existeEmail)
 
   if (existeEmail) {
     throw new Error(`El correo ${correo} ya está registrado`)
@@ -36,6 +38,7 @@ const existeUsuarioPorId = async (id) => {
   /**
    * !Verificar si el id existe en la base de datos
    * El id ya no se pasa como objeto
+   * findById(id) busca en la base de datos de MongoDB por id
    */
   const existeUsuario = await Usuario.findById(id)
 

@@ -34,6 +34,7 @@ const tieneRole = (...roles) => {
     }
 
     // si el rol del usuario no está en el array de roles que se quieren validar
+    // includes() devuelve true si el elemento está en el array
     if (!roles.includes(req.usuario.rol)) {
       return res.status(401).json({
         msg: `El servicio requiere uno de estos roles ${roles}`

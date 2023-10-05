@@ -22,7 +22,7 @@ const usuariosGet = async (req = request, res = response) => {
 
   // ?Ejecutar las dos promesas al mismo tiempo
   const [total, usuarios] = await Promise.all([
-    Usuario.countDocuments(query),
+    Usuario.countDocuments(query), // Cuenta el número de documentos que hay en la colección de usuarios
     Usuario.find(query).skip(Number(desde)).limit(Number(limite))
   ])
 
@@ -38,10 +38,13 @@ const usuariosPost = async (req = request, res = response) => {
   const usuario = new Usuario({ nombre, correo, password, rol })
 
   /**
-   * !Encriptar la contraseña
+   * !Encriptar la contraseña con bcryptjs
+   * bcryptjs es una librería para encriptar contraseñas en una sola vía
    * Generar el salt para encriptar la contraseña
    * Por defecto genera 10 vueltas para encriptar la contraseña
+   * genSaltSync(<vueltas>) genera el salt con el número de vueltas que se le indique
    * hashSync es para encriptar la contraseña en una sola vía
+   * hashSync(<contraseña>, <salt>) encripta la contraseña con el salt que se le indique
    */
   const salt = bcryptjs.genSaltSync()
   usuario.password = bcryptjs.hashSync(password, salt)
@@ -54,7 +57,7 @@ const usuariosPost = async (req = request, res = response) => {
   await usuario.save()
 
   res.json({
-    msg: 'post API - controlador',
+    msg: 'Usuario creado correctamente',
     usuario
   })
 }
@@ -62,6 +65,8 @@ const usuariosPost = async (req = request, res = response) => {
 const usuariosPut = async (req = request, res = response) => {
   const id = req.params.id
   const { _id, password, google, correo, ...resto } = req.body
+
+  console.log(req.body)
 
   // Si el usuario enviá un password, hay que actualizarlo
   if (password) {
@@ -76,6 +81,8 @@ const usuariosPut = async (req = request, res = response) => {
    * Se conecta a la base de datos de MongoDB Atlas
    * findByIdAndUpdate(id, resto) busca el usuario por id y lo actualiza con los datos de resto
    * findByIdAndUpdate( <id>, <datos a actualizar>, <opciones> )
+   * { new: true } es para que devuelva el usuario actualizado en la respuesta
+   * si no se pone, devuelve el usuario antes de actualizarlo
    */
   const usuario = await Usuario.findByIdAndUpdate(id, resto, { new: true })
 
@@ -94,15 +101,18 @@ const usuariosDelete = async (req = request, res = response) => {
 
   // const uid = req.uid
 
-  // Borrar físicamente, no recomendado porque se pierden los datos relacionados con el usuario
+  // !Borrar físicamente, no recomendado porque se pierden los datos relacionados con el usuario
   // const usuario = await Usuario.findByIdAndDelete(id)
 
-  // Borrar cambiando el estado del usuario
-  const usuario = await Usuario.findByIdAndUpdate(id, { estado: false }, { new: true })
+  // !Borrar cambiando el estado del usuario
+  // findByIdAndUpdate(id, { estado: false }) busca el usuario por id y actualiza el estado a false
+  // findByIdAndUpdate( <id>, <datos a actualizar>, <opciones> )
+  // { new: true } es para que devuelva el usuario actualizado en la respuesta
+  const usuarioEliminado = await Usuario.findByIdAndUpdate(id, { estado: false }, { new: true })
 
   const usuarioAutenticado = req.usuario
 
-  res.json({ usuario, usuarioAutenticado })
+  res.json({ msg: 'Usuario eliminado correctamente', usuarioEliminado, usuarioAutenticado })
 }
 
 module.exports = {

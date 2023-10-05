@@ -40,6 +40,7 @@ router.put(
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId), // (id) => existeUsuarioPorId(id)
     check('rol').custom(esRolValido),
+    check('password', 'El password debe tener más de 6 letras').isLength({ min: 6 }),
     validarCampos
   ],
   usuariosPut
