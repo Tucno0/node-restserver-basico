@@ -1,9 +1,8 @@
 /**
  * Validar si el rol y correo existen en la base de datos
  */
-const Usuario = require('../models/usuario')
 const Role = require('../models/role')
-const e = require('express')
+const { Usuario, Categoria, Producto } = require('../models')
 
 const esRolValido = async (rol = '') => {
   // Buscar el rol en la base de datos de MongoDB
@@ -47,8 +46,26 @@ const existeUsuarioPorId = async (id) => {
   }
 }
 
+const existeCategoriaPorId = async (id) => {
+  const existeCategoria = await Categoria.findById(id)
+
+  if (!existeCategoria) {
+    throw new Error(`El id ${id} no existe en la base de datos`)
+  }
+}
+
+const existeProductoPorId = async (id) => {
+  const existeProducto = await Producto.findById(id)
+
+  if (!existeProducto) {
+    throw new Error(`El id ${id} no existe en la base de datos`)
+  }
+}
+
 module.exports = {
   esRolValido,
   emailExiste,
-  existeUsuarioPorId
+  existeUsuarioPorId,
+  existeCategoriaPorId,
+  existeProductoPorId
 }

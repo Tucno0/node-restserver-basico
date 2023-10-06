@@ -35,6 +35,8 @@ const usuariosGet = async (req = request, res = response) => {
 const usuariosPost = async (req = request, res = response) => {
   // const body = req.body
   const { nombre, correo, password, rol } = req.body
+
+  // Se crea una instancia del modelo Usuario con los datos que se reciben en el body
   const usuario = new Usuario({ nombre, correo, password, rol })
 
   /**

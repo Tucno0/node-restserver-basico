@@ -19,7 +19,6 @@ const esAdminRole = (req = request, res = response, next) => {
 }
 
 /**
- *
  * @param  {...any} roles array de roles que se quieren validar
  * @returns
  * El funcion que retorna es un middleware que se va a ejecutar antes de la petición en el router
