@@ -6,7 +6,8 @@ const {
   cargarArchivo,
   actualizarImagen,
   mostrarImagen,
-  actualizarImagenCloudinary
+  actualizarImagenCloudinary,
+  mostrarImagenCloudinary
 } = require('../controllers/uploads.controller')
 const { coleccionesPermitidas, existeUsuarioPorId } = require('../helpers')
 const { validarArchivoSubir } = require('../middlewares')
@@ -37,7 +38,8 @@ router.get(
     check('coleccion').custom((c) => coleccionesPermitidas(c, ['usuarios', 'productos'])),
     validarCampos
   ],
-  mostrarImagen
+  // mostrarImagen
+  mostrarImagenCloudinary
 )
 
 module.exports = router

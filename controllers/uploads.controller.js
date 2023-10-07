@@ -155,6 +155,7 @@ const actualizarImagenCloudinary = async (req = request, res = response) => {
   })
 }
 
+//! Mostrar imagen sin usar cloudinary
 const mostrarImagen = async (req = request, res = response) => {
   const { coleccion, id } = req.params
 
@@ -218,9 +219,57 @@ const mostrarImagen = async (req = request, res = response) => {
   res.sendFile(phatImageDefault)
 }
 
+//! Mostrar imagen usando cloudinary
+const mostrarImagenCloudinary = async (req = request, res = response) => {
+  const { coleccion, id } = req.params
+  const phatImageDefault = path.join(__dirname, '../assets/no-image.jpg')
+  let modelo
+
+  // Validar que exista el id en la base de datos
+  switch (coleccion) {
+    case 'usuarios':
+      modelo = await Usuario.findById(id)
+
+      if (!modelo) {
+        console.log(`No existe un usuario con el id ${id}`)
+        return res.status(400).sendFile(phatImageDefault)
+      }
+
+      break
+
+    case 'productos':
+      modelo = await Producto.findById(id)
+
+      if (!modelo) {
+        console.log(`No existe un producto con el id ${id}`)
+        return res.status(400).sendFile(phatImageDefault)
+      }
+
+      break
+
+    default:
+      return res.status(500).json({
+        msg: 'Se me olvidó validar esto'
+      })
+  }
+
+  // Verificar si el modelo tiene una imagen
+  if (modelo.img) {
+    // redirect: redirecciona a la url que se le pasa como parámetro
+    console.log('Imagen encontrada')
+    console.log(modelo.img)
+    return res.redirect(modelo.img)
+  }
+
+  console.log('No hay imagen')
+  // Si no hay imagen, regresar una imagen por defecto
+  res.sendFile(phatImageDefault)
+}
+
 module.exports = {
   cargarArchivo,
   actualizarImagen,
   mostrarImagen,
-  actualizarImagenCloudinary
+  actualizarImagenCloudinary,
+  mostrarImagenCloudinary
 }
