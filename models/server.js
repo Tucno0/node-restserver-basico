@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { dbConnection } = require('../database/config')
+const fileUpload = require('express-fileupload')
 
 class Server {
   constructor() {
@@ -12,7 +13,8 @@ class Server {
       buscar: '/api/buscar',
       categorias: '/api/categorias',
       productos: '/api/productos',
-      usuarios: '/api/usuarios'
+      usuarios: '/api/usuarios',
+      uploads: '/api/uploads'
     }
 
     // Conectar a base de datos
@@ -57,6 +59,23 @@ class Server {
      * http://localhost:8080/index.html
      */
     this.app.use(express.static('public'))
+
+    /**
+     * FileUpload - Carga de archivos
+     * puede ser cualquier tipo de archivo
+     * fileUpload es un middleware que se encarga de guardar los archivos en una carpeta
+     * se pasa un objeto con las opciones que se quieren
+     * useTempFiles: true: para que use archivos temporales mientras se sube el archivo al servidor
+     * tempFileDir: '/tmp/': carpeta donde se guardan los archivos temporales
+     * createParentPath: true: para que cree la carpeta donde se van a guardar los archivos
+     */
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+        createParentPath: true
+      })
+    )
   }
 
   routes() {
@@ -77,6 +96,7 @@ class Server {
     this.app.use(this.paths.categorias, require('../routes/categorias.routes'))
     this.app.use(this.paths.productos, require('../routes/productos.routes'))
     this.app.use(this.paths.buscar, require('../routes/buscar.routes'))
+    this.app.use(this.paths.uploads, require('../routes/uploads.routes'))
   }
 
   listen() {
